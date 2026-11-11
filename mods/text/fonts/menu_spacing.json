@@ -1,0 +1,10 @@
+{
+  "about": "Proportional spacing for the menu font. gap: pixels between letters. space: a space's width. maxKern: how far automatic kerning may pull a pair together (0 turns it off). advance / left / kern: per-letter and per-pair overrides, for example \"advance\": { \"i\": 3 }, \"kern\": { \"Te\": -1 }. clear: the fewest pixels kept clear between a letter and the letters either side, never kerned closer, for example \"clear\": { \"'\": 1, \".\": 1 }.",
+  "gap": 1,
+  "space": 5,
+  "maxKern": 1,
+  "advance": {},
+  "left": {},
+  "kern": {},
+  "clear": {}
+}

@@ -1,0 +1,7 @@
+{
+  "id": "kf2.jpdisc",
+  "name": "Japanese Disc",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "Plays King's Field's Japanese title screen, opening and ending (King's Field II in Japan) from your Japanese disc image: the gold logo and doorway painting, and the movies with their own music in place of the US narration, at their own speed, the ending with the Japanese staff credits. With Retranslation and Text, the movies' text cards are in the new English. Point it at your .cue or .chd in the mod's settings. Nothing from either disc is copied; it is read as the game plays."
+}

@@ -1,0 +1,7 @@
+{
+  "id": "kf2.truthglass",
+  "name": "Truth Glass Hotkey",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "A hotkey (`) that uses the Truth Glass on whatever is in front of you, as if you had picked it from the item menu: the game's own enemy and NPC description. Works without carrying the Truth Glass, or optionally only when you have it. Key and pad button can be changed."
+}

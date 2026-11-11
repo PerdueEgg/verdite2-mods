@@ -1,0 +1,7 @@
+{
+  "id": "kf2.npcdialogue",
+  "name": "NPC Dialogue",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "King's Field 3 style conversations. While an NPC's line is up, Interact goes straight to their next line with no animations in between; Cancel ends the conversation. At the end of their dialogue Interact repeats the last line until you cancel. Shopkeepers and the fortune teller are left as they are."
+}

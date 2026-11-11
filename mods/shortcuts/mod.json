@@ -1,0 +1,7 @@
+{
+  "id": "kf2.shortcuts",
+  "name": "Shortcuts",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "Expands the game's Select shortcut into five: Select plus four more, on keys 1-5 or Select and the d-pad. Assign any item, attack spell or support spell from the Equipment page's shortcut row, and use it with one press, through the game's own Select code. Works with the Text and Retranslation mods when they are on, and without them."
+}

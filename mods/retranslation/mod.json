@@ -1,0 +1,10 @@
+{
+  "id": "kf2.retranslation",
+  "name": "Retranslation",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "A new English translation made from the Japanese release (King's Field II): every sign, dialogue line, description and place card, the menus, items, equipment and spells, the short messages in play (Level up, ...), and (with the Japanese Disc mod) the opening and ending movies' text. Needs the Text mod, which draws it all in its fonts. Each part can be switched off. Reads the translation workbook (.ods) in its folder, with an Import button in its settings to load your edits while the game runs.",
+  "dependencies": [
+    "kf2.text"
+  ]
+}

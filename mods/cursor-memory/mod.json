@@ -1,0 +1,7 @@
+{
+  "id": "kf2.cursormemory",
+  "name": "Cursor Memory",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "King's Field 3 style menu cursors. The Items and Magic pages open on the entry you last had highlighted, and every Equipment sub menu (including attack magic and the second slot) opens on what is equipped. Each part has its own setting."
+}

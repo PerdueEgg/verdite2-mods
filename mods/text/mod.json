@@ -1,0 +1,7 @@
+{
+  "id": "kf2.text",
+  "name": "Text",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "New fonts for the game's text: the three fonts redrawn with full upper and lower case and proportional spacing. Signs, dialogue, descriptions and place cards are redrawn from the US text in the new fonts, and the menus, names and short messages in play (Level up, 36 gold, ...) are shown in normal capitalisation. Each can be switched off. The fonts are editable character maps in the mod's fonts folder. Retranslation, Shortcuts and the Japanese Disc mod draw their own text with it."
+}
