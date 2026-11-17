@@ -547,7 +547,7 @@ static class MovieText
         {
             if (!c.Ready) continue;
             string? t = !English || JpDiscMod.JapaneseRun() ? null
-                      : TextApi.GetString("movie:" + c.Key) ?? (Cards.English.TryGetValue(c.Key, out var e) ? e : null);
+                      : TextApi.GetString("movie:" + c.Key) ?? (global::Kf2.Mods.JpDisc.Cards.English.TryGetValue(c.Key, out var e) ? e : null);
             if (t == c.Text) continue;
             if (t == null) { c.Letters = null; c.Text = null; c.Version++; changed = true; continue; }
             int width = Math.Clamp(Math.Max(c.X1 - c.X0, 240), 64, Math.Max(64, W - c.X0 - 12));
