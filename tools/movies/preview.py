@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Preview the Japanese Disc mod's movie lettering offline: the same steps as
+r"""Preview the Japanese Disc mod's movie lettering offline: the same steps as
 jpdisc/MovieText.cs, in numpy, on frames ffmpeg decodes from the two disc images.
 
-    python3 preview.py KF2_retranslation.ods JP.bin US.bin out_dir [card ...]
+    python3 preview.py JP.bin US.bin fonts_dir out_dir [card ...]
 
-The cards, their frames and their English come from the workbook's Movies sheet.
+The cards, their frames and their English come from the mod itself (mods/jpdisc/
+Cards.cs). fonts_dir is Verdite2's fonts folder: %LOCALAPPDATA%\Verdite2\fonts on
+Windows, ~/.local/share/verdite2/fonts on Linux.
 JP.bin / US.bin: the raw 2352-byte-sector .bin of each disc. Writes, for each card,
 card_<key>.png: three frames (mid-card, fade-in, fade-out), each as Japanese |
 Japanese taken out | English in. Needs numpy, scipy, Pillow and ffmpeg on the PATH.
@@ -12,9 +14,9 @@ Japanese taken out | English in. Needs numpy, scipy, Pillow and ffmpeg on the PA
 import os, sys, subprocess, tempfile, numpy as np
 from PIL import Image
 here = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, here); sys.path.insert(0, os.path.join(here, '..'))
-import disc, twin, textfont
-from build_text_cs import read_sheets, table, clean
+sys.path.insert(0, here)
+import re, disc, twin, textfont
+CARDS_CS = os.path.join(here, '..', '..', 'mods', 'jpdisc', 'Cards.cs')
 
 TWINS = {'OP': ('OP/OP.S', 'OP/OP2.S'), 'ED': ('OP/ED.S', 'OP/ED0.S')}
 
@@ -28,20 +30,20 @@ def frames(binpath, name, tmp):
     a = np.memmap(rgb, np.uint8, 'r').reshape(-1, 240, 320, 3)
     return lambda f: np.array(a[f - 1]) if 1 <= f <= len(a) else None   # STR frames count from 1
 
-def cards(ods):
-    """(key, movie, first frame, last frame, English) for each card the workbook letters."""
-    for r in table(read_sheets(ods), 'Movies'):
-        key, mv, en = r.get('Key', '').strip(), r.get('Movie', '').strip(), clean(r.get('Mod EN', ''))
-        first, _, last = r.get('Frames', '').partition('-')
-        if key and mv in TWINS and en and first.isdigit() and last.isdigit():
-            yield key, mv, int(first), int(last), en
+def cards():
+    """(key, movie, first frame, last frame, English) for each card, read from Cards.cs."""
+    src = open(CARDS_CS, encoding='utf-8').read()
+    unq = lambda s: re.sub(r'\\(.)', r'\1', s)
+    english = {k: unq(v) for k, v in re.findall(r'\["([^"]+)"\] = "((?:[^"\\]|\\.)*)"', src)}
+    for key, first, last in re.findall(r'\("([^"]+)", "OP/\w+\.S", "OP/\w+\.S", (\d+), (\d+)\)', src):
+        if key in english: yield key, key.split('.')[0], int(first), int(last), english[key]
 
-def main(ods, jp, us, out, want):
+def main(jp, us, fonts, out, want):
     os.makedirs(out, exist_ok=True)
-    fnt = textfont.Font('dialogue')
+    fnt = textfont.Font('dialogue', fonts)
     with tempfile.TemporaryDirectory() as tmp:
         cache = {}
-        for key, mv, a, b, en in cards(ods):
+        for key, mv, a, b, en in cards():
             if want and key not in want: continue
             if mv not in cache: cache[mv] = (frames(jp, TWINS[mv][0], tmp), frames(us, TWINS[mv][1], tmp))
             J, U = cache[mv]

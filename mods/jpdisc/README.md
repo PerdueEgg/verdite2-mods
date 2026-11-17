@@ -5,11 +5,11 @@ Plays the Japanese release's title screen, opening and ending (King's Field II i
 - **Title screen:** the Japanese gold KING'S FIELD logo and the painting of the doorway, in place of the US stone logo and the crossed swords. START and the copyright lines are still the US ones. This part needs no Japanese image: the US disc carries the Japanese pictures too (`OP\OP.D`, which the US game shows only with a hidden button combo).
 - **Opening:** the prologue with its Japanese text and its own music, at the Japanese speed. The Japanese movies carry no sound of their own: the Japanese game plays their music as a sequence while they run, and so does this mod. The US narrator is gone, so nothing reads out text the new translation no longer has. The US ASCII and From Software logos before it are left as they are.
 - **Ending:** the Japanese ending with its music and the Japanese staff credits. The last Japanese frame is then held with the music playing on, as in the Japanese game. A setting adds the US ending's second part (the four spells, the US and localization credits, The End) after it. It is off by default, since it mostly repeats the Japanese credits. With it on, the last Japanese frame waits for the music to finish before the US part starts, and any button starts it sooner.
-- **Movie text:** with **Retranslation** and **Text** on, the Japanese text cards are replaced as the movie plays by the new English (the workbook's Movies sheet), in the Text mod's dialogue font, where the Japanese was, fading in and out with it.
+- **Movie text:** the Japanese text cards are replaced as the movie plays by the Retranslation's English, which the mod carries itself, in the port's dialogue font, where the Japanese was, fading in and out with it. Whatever the language, except Japanese, whose movies keep their Japanese text. Can be switched off.
 
 ## Setup
 
-1. Copy the `jpdisc` folder into Verdite2's `mods` folder and switch it on. For the English in the movies, `text` and `retranslation` have to be on too.
+1. Copy the `jpdisc` folder into Verdite2's `mods` folder and switch it on. Needs Verdite2 0.6.0 or later, whose built-in text letters the movies' English. While the mod is on, Verdite2's own Japanese title and movies (for a Japanese run) stand down and leave them to it.
 2. Put your Japanese disc image (the `.cue` with its `.bin`, or a `.chd`) in the same folder as your US one, or in the mod's `jpdisc` folder, and the mod finds it by itself. Or, in the mod's settings, press **Browse...** and pick it, or type its path and press **Use this image**. The status line should say "Japanese disc ready".
 3. Restart the game, since the title screen and the opening load once, at boot.
 
@@ -25,6 +25,7 @@ Nothing is copied from either disc: the Japanese image is read as the game plays
 ## Settings
 
 - **Japanese title screen**, **Japanese opening, with its music**, **Japanese ending...**, and **Then the US ending's second part** (off by default).
+- **English text on the movies' cards** (on by default).
 - **Lettering brightness** and **Lettering font** (dialogue, or the larger sign font) for the movies' English.
 
 ## If something looks or sounds wrong

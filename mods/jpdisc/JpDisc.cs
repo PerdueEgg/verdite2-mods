@@ -51,7 +51,8 @@ namespace Kf2.Mods.JpDisc;
 public sealed partial class JpDiscMod : IMod
 {
     const string PathKey = "kf2.jpdisc.path", TitleKey = "kf2.jpdisc.title", OpeningKey = "kf2.jpdisc.opening",
-                 EndingKey = "kf2.jpdisc.ending", UsCreditsKey = "kf2.jpdisc.uscredits", InkKey = "kf2.jpdisc.ink", StyleKey = "kf2.jpdisc.style";
+                 EndingKey = "kf2.jpdisc.ending", UsCreditsKey = "kf2.jpdisc.uscredits", InkKey = "kf2.jpdisc.ink", StyleKey = "kf2.jpdisc.style",
+                 EnglishKey = "kf2.jpdisc.english";
     static readonly string[] Styles = ["dialogue", "card"];
 
     // US movie, its Japanese twin.
@@ -78,6 +79,7 @@ public sealed partial class JpDiscMod : IMod
         _ending = v.GetBool(EndingKey, true);
         _usCredits = v.GetBool(UsCreditsKey, false);
         MovieText.Ink = (byte)Math.Clamp(v.GetInt(InkKey, 205), 64, 255);
+        MovieText.English = v.GetBool(EnglishKey, true);
         string st = v.GetString(StyleKey, "dialogue");
         MovieText.Style = Array.IndexOf(Styles, st) >= 0 ? st : "dialogue";
         Open();
@@ -236,14 +238,40 @@ public sealed partial class JpDiscMod : IMod
         _installedFor = "";
     }
 
+    static System.Reflection.PropertyInfo? _japaneseActive;
+    static bool _lookedForJapanese;
+
+    /// <summary>The port is running in Japanese (PORT SETTINGS ▸ GAMEPLAY ▸ LANGUAGE):
+    /// the cards keep their Japanese text. Found by name, since a mod is built
+    /// without the port's own types.</summary>
+    public static bool JapaneseRun()
+    {
+        if (!_lookedForJapanese)
+        {
+            _lookedForJapanese = true;
+            try
+            {
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                    if (asm.GetType("Kf2.Japanese.JapaneseDisc") is { } t)
+                    {
+                        _japaneseActive = t.GetProperty("Active", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                        break;
+                    }
+            }
+            catch (Exception e) { Console.WriteLine($"[jpdisc] looking for the Japanese language: {e.Message}"); }
+        }
+        try { return _japaneseActive?.GetValue(null) is true; }
+        catch { return false; }
+    }
+
     static bool Swapped(string usMovie) =>
         _remap != null && _jp != null && (usMovie == Opening ? _opening : _ending);
 
     public void DrawSettings()
     {
         ImGui.TextWrapped("King's Field's Japanese title screen, opening and ending (King's Field II in Japan), the movies read from your " +
-                          "Japanese disc image as the game plays, with their own music in place of the US narration. With Retranslation, " +
-                          "the movies' text is in the new English.");
+                          "Japanese disc image as the game plays, with their own music in place of the US narration, and their text " +
+                          "cards in English.");
         string p = _path;
         if (ImGui.InputText("Japanese disc image (.cue or .chd)", ref p, 1024)) _path = p;
         if (ImGui.Button("Browse..."))
@@ -267,8 +295,16 @@ public sealed partial class JpDiscMod : IMod
         ImGui.TextDisabled("Movie changes apply from the next movie; the title screen from the next time it loads.");
         ImGui.TextDisabled(Music.Playing ? "Music: " + Music.Status : "Music: " + (Music.Status.Length > 0 ? Music.Status : "not playing"));
         ImGui.Separator();
-        ImGui.TextWrapped("The movies' English (from Retranslation): the Japanese text is taken out of each card's frames, the scene under " +
-                          "it taken from the US movie's same frame, and the English drawn in.");
+        bool english = MovieText.English;
+        if (ImGui.Checkbox("English text on the movies' cards", ref english))
+        {
+            MovieText.English = english;
+            Save(EnglishKey, english);
+            MovieText.Redraw();
+        }
+        ImGui.TextWrapped("The Retranslation's English, in the port's fonts: the Japanese text is taken out of each card's frames, the " +
+                          "scene under it taken from the US movie's same frame, and the English drawn in. Not in a Japanese run, nor " +
+                          "with PORT SETTINGS' text off (KF2_TEXT=0).");
         ImGui.TextDisabled(MovieText.Status);
         int ink = MovieText.Ink;
         if (ImGui.SliderInt("Lettering brightness", ref ink, 64, 255))

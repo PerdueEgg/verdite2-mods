@@ -8,8 +8,10 @@ using RecompOne.Runtime.Cdrom;
 namespace Kf2.Mods.JpDisc;
 
 /// <summary>
-/// The English over the Japanese movies' text cards (Cards.cs; the text is
-/// Retranslation's, "movie:" + the card's key in the Text mod's string table).
+/// The English over the Japanese movies' text cards (Cards.cs, which carries the
+/// Retranslation's English; a translation can give its own as "movie:" + the card's
+/// key in the port's text string table). Not in a Japanese run, whose movies keep
+/// their Japanese text, nor with the setting off.
 ///
 /// ---- the twin frames ----
 ///
@@ -61,7 +63,7 @@ namespace Kf2.Mods.JpDisc;
 ///   again; and what was filled gets noise as strong as the Japanese frame's own
 ///   (its high frequencies around the texts, by their median), new each frame as the
 ///   Japanese frames' is, so the smoothed patches don't look flat.
-/// - Then the English: the Text mod's lettering wrapped to the Japanese block's width
+/// - Then the English: the port's lettering wrapped to the Japanese block's width
 ///   (240 at least), at its left, centred on it, at its strength, over a shadow one
 ///   pixel right and down as the game draws its own.
 /// - Encoded again into the frame's own sectors, at the lowest qscale from the
@@ -95,6 +97,9 @@ static class MovieText
     const int W = Img.W, H = Img.H, N = Img.N;
     public static readonly List<Card> Cards = new();
     public static string Status = "";
+
+    /// <summary>The cards are lettered in English (the setting, on by default).</summary>
+    public static bool English = true;
     public static byte Ink = 205;
     public static string Style = "dialogue";
     static readonly Dictionary<int, byte[]> _sectors = new();
@@ -219,7 +224,7 @@ static class MovieText
         foreach (var c in cards) if (c.Ready) { ready++; if (c.Built == c.Version && c.Letters != null) done++; }
         Status = prepared < cards.Length
             ? $"reading the movies' text cards ({prepared} of {cards.Length}); {done} in English"
-            : $"{done} of {ready} movie text cards in English" + (done < ready ? " (the rest wait for the English: Text and Retranslation on?)" : "");
+            : $"{done} of {ready} movie text cards in English" + (done < ready ? " (the rest wait for the English: the port's text off, or a Japanese run?)" : "");
     }
 
     /// <summary>A movie's frames, decoded, the last few kept.</summary>
@@ -531,7 +536,7 @@ static class MovieText
     // ---- the English, laid out on the main thread ----
 
     /// <summary>Lay out each worked-out card's English when it has none or its text
-    /// changed (the Text mod's fonts are the main thread's).</summary>
+    /// changed (the port's fonts are the main thread's).</summary>
     public static void Letter()
     {
         if (!TextApi.Ready) return;
@@ -541,7 +546,8 @@ static class MovieText
         foreach (var c in cards)
         {
             if (!c.Ready) continue;
-            string? t = TextApi.GetString("movie:" + c.Key);
+            string? t = !English || JpDiscMod.JapaneseRun() ? null
+                      : TextApi.GetString("movie:" + c.Key) ?? (Cards.English.TryGetValue(c.Key, out var e) ? e : null);
             if (t == c.Text) continue;
             if (t == null) { c.Letters = null; c.Text = null; c.Version++; changed = true; continue; }
             int width = Math.Clamp(Math.Max(c.X1 - c.X0, 240), 64, Math.Max(64, W - c.X0 - 12));

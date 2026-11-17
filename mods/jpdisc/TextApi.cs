@@ -5,13 +5,10 @@ using RecompOne.Runtime.Memory;
 namespace Kf2.Mods.JpDisc;
 
 /// <summary>
-/// The Text mod's functions (mods/text), looked up where it publishes them: the
-/// process data slot "kf2.text". The same file goes in every mod that uses it,
-/// with only the namespace changed. A mod that needs the Text mod lists "kf2.text"
-/// under "dependencies" in its mod.json, so it loads first; a mod that only uses it
-/// when it is there can leave it out, since every call looks the Text mod up as it
-/// is made and gives a plain answer when it is missing. See TextMod.cs in the Text
-/// mod for the list.
+/// The port's lettering (Verdite2's built-in text, which was the Text mod), looked
+/// up where it publishes its functions: the process data slot "kf2.text". Every
+/// call looks it up as it is made and gives a plain answer when it is missing
+/// (KF2_TEXT=0), so this mod lists no dependency.
 /// </summary>
 static class TextApi
 {
@@ -20,7 +17,7 @@ static class TextApi
     static T? Get<T>(string name) where T : class =>
         Api is { } api && api.TryGetValue(name, out var f) ? f as T : null;
 
-    /// <summary>The Text mod is loaded.</summary>
+    /// <summary>The port's lettering is there.</summary>
     public static bool Present => Api != null;
 
     /// <summary>The fonts are loaded (reads the disc the first time).</summary>
@@ -39,17 +36,17 @@ static class TextApi
     public static byte[] MenuEncode(string text, int max) =>
         Get<Func<string, int, byte[]>>("MenuEncode")?.Invoke(text, max) ?? [0xFF];
 
-    /// <summary>The game's own capitals (SHORT SWORD) as the Text mod draws them
+    /// <summary>The game's own capitals (SHORT SWORD) as the port draws them
     /// (Short Sword, with its normal case on); anything else as it is.</summary>
     public static string MenuShown(string text) => Get<Func<string, string>>("MenuShown")?.Invoke(text) ?? text;
 
     /// <summary>A string as menu cells, each cell's offset from the first, and the
-    /// width, spaced as the menus are. Null when the Text mod is not loaded.</summary>
+    /// width, spaced as the menus are. Null without the lettering.</summary>
     public static (int[] Cells, int[] X, int Width)? MenuPlace(string text) =>
         Get<Func<string, (int[] Cells, int[] X, int Width)>>("MenuPlace")?.Invoke(text);
 
     /// <summary>A drop shadow under a menu letter quad just linked onto an ordering
-    /// slot, when the Text mod's menu shadow is on.</summary>
+    /// slot, when the port's menu shadow is on.</summary>
     public static void MenuShadow(IMemory m, uint quad, int slot) => Get<Action<IMemory, uint, int>>("MenuShadow")?.Invoke(m, quad, slot);
 
     /// <summary>Redraw a disc picture with this text wherever the game shows it.
@@ -67,7 +64,7 @@ static class TextApi
     public static int Lines(string style, string text) => Get<Func<string, string, int>>("Lines")?.Invoke(style, text) ?? 0;
 
     /// <summary>Text wrapped to a width and drawn as ink coverage, a byte a pixel, in
-    /// a picture style's font ("dialogue" or "card"). Null when the Text mod is not loaded.</summary>
+    /// a picture style's font ("dialogue" or "card"). Null without the lettering.</summary>
     public static (byte[] Ink, int W, int H)? Coverage(string style, string text, int width) =>
         Get<Func<string, string, int, (byte[] Ink, int W, int H)>>("Coverage") is { } f ? f(style, text, width) : null;
 

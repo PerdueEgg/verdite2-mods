@@ -1,0 +1,7 @@
+{
+  "id": "kf2.encyclopedia",
+  "name": "Encyclopedia",
+  "version": "1.0",
+  "author": "Claude",
+  "description": "A hotkey (J) that opens an encyclopedia in the game's own menu style: every enemy, person, place and item, with the Truth Glass and fortune-teller descriptions, and each discovered enemy, person and place shown as a turning model above its list, as the Items page shows items. Also on the in-game menu, under DATA. Entries unlock through the Truth Glass and the fortune teller, and optionally by encounter, and are kept with each memory-card save. Also fixes the deep-sea Sigill's description and the area-6 graves, and adds places the game never named, with cards of their own (can be switched off). With the Retranslation as the language, its names follow the translation. Needs Verdite2 0.6.0 or later."
+}
